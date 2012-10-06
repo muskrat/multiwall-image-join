@@ -23,14 +23,25 @@ def join_images(img_list):
     # Calculate size of new image by adding up x values and taking the
     # maximum y value.
     newsize = (reduce(add, elems(0, sizes)), 
-                    max(elems(1, sizes)))
+               max(elems(1, sizes)))
 
-    # Create the new image and insert images from batch
+    # Create the new image and insert images from batch...
+    
+    # recursively...
+    def join(new, imglist, topleft):
+        if not imglist:
+            return new
+        else:
+            new.paste(imglist[0], (topleft, 0))
+            join(new, imglist[1:], topleft + imglist[0].size)
+    
+    # or iteratively.
     new = Image.new('RGB', newsize)
     topleft = 0
     for img in img_list:
         new.paste(img, (topleft, 0))
         topleft += img.size[0]
+    
     return new
 
 def save_image(img, path):
